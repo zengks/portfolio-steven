@@ -1,0 +1,111 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             Int              @id @default(autoincrement())
+  username       String           @unique
+  password       String
+  profile        Profile?
+  role           String?          @default("guest")
+  blogPost       BlogPost[]
+  project        Project[]
+  education      Education[]
+  workExperience WorkExperience[]
+  certificate    Certificate[]
+  socialMedia    SocialMedia[]
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime
+}
+
+model Profile {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @unique
+  user      User     @relation(fields: [userId], references: [id])
+  firstName String
+  lastName  String?
+  email     String
+  bio       String?
+  imageLink String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+}
+
+model Certificate {
+  id          Int       @id @default(autoincrement())
+  userId      Int
+  user        User      @relation(fields: [userId], references: [id])
+  name        String?
+  certNumber  String?
+  dateIssued  DateTime?
+  dateExpired DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime
+}
+
+model Project {
+  id                 Int      @id @default(autoincrement())
+  userId             Int
+  user               User     @relation(fields: [userId], references: [id])
+  title              String?
+  repo_link          String?
+  project_link       String?
+  description        String?
+  preview_image_link String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime
+}
+
+model WorkExperience {
+  id          Int       @id @default(autoincrement())
+  userId      Int
+  user        User      @relation(fields: [userId], references: [id])
+  jobTitle    String
+  company     String
+  startDate   DateTime
+  endDate     DateTime?
+  description String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime
+}
+
+model Education {
+  id           Int       @id @default(autoincrement())
+  userId       Int
+  user         User      @relation(fields: [userId], references: [id])
+  school       String
+  degree       String
+  fieldOfStudy String?
+  startDate    DateTime
+  endDate      DateTime?
+  gpa          Float?
+  description  String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime
+}
+
+model SocialMedia {
+  id              Int      @id @default(autoincrement())
+  userId          Int
+  user            User     @relation(fields: [userId], references: [id])
+  logoLink        String?
+  socialMediaLink String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime
+}
+
+model BlogPost {
+  id        Int      @id @default(autoincrement())
+  authorId  Int
+  author    User     @relation(fields: [authorId], references: [id])
+  title     String   @db.VarChar(255)
+  content   String?
+  published Boolean? @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+}
