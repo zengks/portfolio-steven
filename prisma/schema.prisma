@@ -12,6 +12,7 @@ model User {
   username       String           @unique
   password       String
   profile        Profile?
+  role           String?          @default("guest")
   blogPost       BlogPost[]
   project        Project[]
   education      Education[]
